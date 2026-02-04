@@ -1,4 +1,4 @@
-# healthiswealth
+# HealthIsWealth
 
 ## Introduction
 
