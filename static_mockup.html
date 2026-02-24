@@ -441,7 +441,7 @@
 
         /* mobile responsivness (Media Queries) */
         @media (max-width: 768px) {
-            /* 1. Header & Navigation */
+            /* Header & Navigation */
             header {
                 flex-direction: column;
                 padding: 1rem;
@@ -466,7 +466,7 @@
                 width: 100%;
             }
 
-            /* 2. Hero Section */
+            /* Hero Section */
             .hero {
                 padding: 2rem 1rem 1rem;
             }
@@ -475,7 +475,7 @@
                 font-size: 2rem;
             }
 
-            /* 3. Search Bar */
+            /* Search Bar */
             .search-wrapper {
                 flex-direction: column;
                 margin: 0 1rem 2rem 1rem;
@@ -497,7 +497,7 @@
                 margin-top: 0.5rem;
             }
 
-            /* 4. Main Layout (List & Map) */
+            /* Main Layout (List & Map) */
             .container {
                 grid-template-columns: 1fr;
                 padding: 0 1rem;
@@ -509,7 +509,7 @@
                 margin-bottom: 2rem;
             }
 
-            /* 5. Cards & Buttons */
+            /* Cards & Buttons */
             .card-header {
                 flex-direction: column;
                 gap: 0.75rem;
@@ -531,7 +531,7 @@
                 padding: 0.8rem;
             }
 
-            /* 6. Provider Dashboard */
+            /* Provider Dashboard */
             .provider-dashboard {
                 padding: 0 1rem;
                 margin: 1.5rem auto;
@@ -930,25 +930,25 @@
 
     <script>
         function switchView(viewName) {
-            // 1. Hide all view sections
+            // Hide all view sections
             const views = document.querySelectorAll('.view-section');
             views.forEach(view => {
                 view.classList.remove('active');
             });
             
-            // 2. Remove 'active' class from all nav links
+            // Remove 'active' class from all nav links
             const navLinks = document.querySelectorAll('nav a');
             navLinks.forEach(link => {
                 link.classList.remove('active');
             });
 
-            // 3. Show the selected view
+            // Show the selected view
             const selectedView = document.getElementById(viewName + '-view');
             if (selectedView) {
                 selectedView.classList.add('active');
             }
 
-            // 4. Highlight the active nav link
+            // Highlight the active nav link
             const activeNav = document.getElementById('nav-' + viewName);
             if (activeNav) {
                 activeNav.classList.add('active');
