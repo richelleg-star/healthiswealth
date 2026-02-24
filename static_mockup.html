@@ -439,6 +439,109 @@
         input:checked + .slider { background-color: var(--secondary); }
         input:checked + .slider:before { transform: translateX(26px); }
 
+        /* mobile responsivness (Media Queries) */
+        @media (max-width: 768px) {
+            /* 1. Header & Navigation */
+            header {
+                flex-direction: column;
+                padding: 1rem;
+                gap: 1rem;
+                position: static;
+            }
+            
+            nav {
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 1rem;
+                width: 100%;
+            }
+
+            .language-selector {
+                width: 100%;
+                text-align: center;
+                margin-top: 0.5rem;
+            }
+
+            .language-selector select {
+                width: 100%;
+            }
+
+            /* 2. Hero Section */
+            .hero {
+                padding: 2rem 1rem 1rem;
+            }
+            
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            /* 3. Search Bar */
+            .search-wrapper {
+                flex-direction: column;
+                margin: 0 1rem 2rem 1rem;
+                padding: 1.5rem;
+            }
+
+            .search-input {
+                padding: 0.5rem;
+            }
+
+            .filter-select {
+                width: 100%;
+                padding: 1rem;
+            }
+
+            .btn-search {
+                width: 100%;
+                padding: 1rem;
+                margin-top: 0.5rem;
+            }
+
+            /* 4. Main Layout (List & Map) */
+            .container {
+                grid-template-columns: 1fr;
+                padding: 0 1rem;
+            }
+
+            .map-container {
+                position: static;
+                height: 400px;
+                margin-bottom: 2rem;
+            }
+
+            /* 5. Cards & Buttons */
+            .card-header {
+                flex-direction: column;
+                gap: 0.75rem;
+            }
+
+            .card-actions {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 1rem;
+            }
+
+            .btn-group {
+                flex-direction: column;
+                width: 100%;
+            }
+
+            .btn {
+                width: 100%;
+                padding: 0.8rem;
+            }
+
+            /* 6. Provider Dashboard */
+            .provider-dashboard {
+                padding: 0 1rem;
+                margin: 1.5rem auto;
+            }
+
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
     </style>
 </head>
 <body>
