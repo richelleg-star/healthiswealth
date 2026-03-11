@@ -343,3 +343,45 @@ nav a {
             text-align: center;
             color: var(--text-muted);
         }
+
+/* Provider Portal Styles */
+
+.provider-panel {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+
+.provider-panel h2 {
+            font-size: 1.75rem;
+            margin: 0 0 2rem 0;
+        }
+
+.provider-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+.provider-panel input,
+.provider-panel select {
+            width: 100%;
+            padding: 1rem;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            margin-bottom: 1.5rem;
+        }
+
+.btn-save {
+            width: 100%;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 1rem;
+            border-radius: 8px;
+            font-weight: 600;
+}

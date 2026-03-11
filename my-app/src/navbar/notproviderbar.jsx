@@ -1,5 +1,5 @@
 import React from "react";
-import { Link, useNavigate, NavLink } from "react-router";
+import { Link, useNavigate, NavLink } from "react-router-dom";
 
 export function LoggedOutProviderBar(){
     return(
