@@ -19,8 +19,8 @@ export function Homepage(props){
             <section className="hero">
                 <h1>Find Affordable Care, Instantly.</h1>
                 <p>No hidden fees. No language barriers. Search for free, sliding-scale, and community clinics near you in King County.</p>
-                <SearchFunction filteritems1={filtereditems1} filteritems2={filtereditems2}/>
             </section>
+            <SearchFunction filteritems1={filtereditems1} filteritems2={filtereditems2}/>
             <main className="container">
                 <div>
                     <div className="list-view">
