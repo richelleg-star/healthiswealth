@@ -7,6 +7,9 @@ import { ViewMap } from "../components/mapintegration";
 import { getDatabase, ref, onValue } from "firebase/database";
 import { useEffect, useState } from "react";
 
+
+//npm run build THEN firebase deploy
+
 export function Homepage(props){
     const filtereditems1 = ['All Services', 'Primary Care', 'Dental', 'Mental Health']
     const filtereditems2 = ['Any Cost', 'Free Only', 'Sliding Scale']
@@ -38,9 +41,8 @@ export function Homepage(props){
             for (const [name, info] of Object.entries(clinics)) {
                 if (info.Address.includes("Multiple")) continue;
                 const encoded = encodeURIComponent(info.Address);
-                const res = await fetch(`https://nominatim.openstreetmap.org/search?q=${encoded}&format=json`, {
-                    headers: { 'User-Agent': `healthiswealth (${import.meta.env.VITE_CONTACT_EMAIL})` }  // backticks!
-                });
+                const nominatimUrl = `https://nominatim.openstreetmap.org/search?q=${encoded}&format=json`;
+                const res = await fetch(`/.netlify/functions/geocode?address=${encoded}`);
                 const data = await res.json();
                 if (data[0]) coords[name] = { lat: data[0].lat, lon: data[0].lon };
                 await new Promise(r => setTimeout(r, 1000));
