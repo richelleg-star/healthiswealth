@@ -41,8 +41,9 @@ export function Homepage(props){
             for (const [name, info] of Object.entries(clinics)) {
                 if (info.Address.includes("Multiple")) continue;
                 const encoded = encodeURIComponent(info.Address);
-                const nominatimUrl = `https://nominatim.openstreetmap.org/search?q=${encoded}&format=json`;
-                const res = await fetch(`/.netlify/functions/geocode?address=${encoded}`);
+                const res = await fetch(`https://nominatim.openstreetmap.org/search?q=${encoded}&format=json`, {
+                    headers: { 'User-Agent': `healthiswealth (${import.meta.env.VITE_CONTACT_EMAIL})` } 
+                });
                 const data = await res.json();
                 if (data[0]) coords[name] = { lat: data[0].lat, lon: data[0].lon };
                 await new Promise(r => setTimeout(r, 1000));

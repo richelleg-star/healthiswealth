@@ -39,7 +39,7 @@ export function HealthEvents(){
                 if (info.Address.includes("Multiple")) continue;
                 const encoded = encodeURIComponent(info.Address);
                 const res = await fetch(`https://nominatim.openstreetmap.org/search?q=${encoded}&format=json`, {
-                    headers: { 'User-Agent': `healthiswealth (${import.meta.env.VITE_CONTACT_EMAIL})` }  // backticks!
+                    headers: { 'User-Agent': `healthiswealth (${import.meta.env.VITE_CONTACT_EMAIL})` } 
                 });
                 const data = await res.json();
                 if (data[0]) coords[name] = { lat: data[0].lat, lon: data[0].lon };
