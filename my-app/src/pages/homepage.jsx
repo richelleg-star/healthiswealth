@@ -6,9 +6,10 @@ import { BrowseCards } from "../cards/regularcards";
 import { ViewMap } from "../components/mapintegration";
 import { getDatabase, ref, onValue } from "firebase/database";
 import { useEffect, useState } from "react";
+import { FooterForWeb } from "../navbar/footer";
 
 
-//npm run build THEN firebase deploy
+//npm run build THEN netlify deploy --prod
 
 export function Homepage(props){
     const filtereditems1 = ['All Services', 'Primary Care', 'Dental', 'Mental Health']
@@ -58,6 +59,7 @@ export function Homepage(props){
         <header>
             <LoggedOutProviderBar/>
         </header>
+        <body>
         <div id="patient-view" className="view-section active">
             <section className="hero">
                 <h1>Find Affordable Care, Instantly.</h1>
@@ -75,6 +77,8 @@ export function Homepage(props){
                 <ViewMap coords = {clinicCoords}/>
             </main>
         </div>
+        </body>
+        <FooterForWeb/>
         </>
     )
 }

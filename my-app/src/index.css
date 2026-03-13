@@ -384,6 +384,22 @@ nav a {
             font-weight: 600;
 }
 
+/* footer */
+
+            .site-footer{
+                text-align:center;
+                padding:2rem;
+                border-top:1px solid var(--border);
+                color:var(--text-muted);
+                background:white;
+                margin-top:3rem;
+        }
+
+            .site-footer p{
+                margin:0.25rem 0;
+                font-size:0.9rem;
+        }
+
 
         @media (max-width: 768px) {
             /* Header & Navigation */

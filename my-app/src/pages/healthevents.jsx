@@ -7,7 +7,7 @@ import { getDatabase, ref, onValue } from "firebase/database";
 import { LoggedOutProviderBar } from '../navbar/notproviderbar';
 import { EventCards } from "../cards/eventcards";
 import { useEffect, useState } from "react";
-
+import { FooterForWeb } from "../navbar/footer";
 
 export function HealthEvents(){
     const filtereditems1 = ['Any Date', 'Today', 'This Weekend'];
@@ -75,6 +75,7 @@ export function HealthEvents(){
                 </div>
                 <ViewMap coords={eventsCoords}/>
             </main>
+        <FooterForWeb/>
         </>
     )
 }
