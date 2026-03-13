@@ -325,19 +325,17 @@ nav a {
             font-weight: 600;
         }
 
-                .map-container {
-            position: sticky;
-            top: 6rem;
-            height: calc(100vh - 8rem);
-            background: #e2e8f0;
-            border-radius: 16px;
-            overflow: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border: 1px solid var(--border);
-            box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
-        }
+.map-container {
+  position: sticky;
+  top: 6rem;
+  height: calc(100vh - 8rem);
+  background: #e2e8f0;
+  border-radius: 16px;
+  overflow: clip; /* changed from hidden */
+  border: 1px solid var(--border);
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
+  /* removed flex/align/justify */
+}
 
         .map-placeholder {
             text-align: center;

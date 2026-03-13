@@ -1,13 +1,27 @@
 import React from "react"
-export function ViewMap(){
-    return(
-                    <div className="map-container">
-                        <div className="map-placeholder">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-                        <h2>Event Map View</h2>
-                        <p>Google Maps API</p>
-                        </div>
-                    </div>
+import { useState } from 'react';
+import { Map, Marker } from 'pigeon-maps'
+
+export function ViewMap(props) {
+    const coords = props.coords
+    console.log(coords)
+    return (
+        <div className="map-container">
+            <Map
+                height={window.innerHeight - 128}
+                defaultCenter={[47.44, -122.24]}
+                defaultZoom={11}
+            >
+            {Object.entries(coords).map(([name, {lat, lon}]) => (
+                <Marker
+                    key={name}
+                    width={50}
+                    anchor={[Number(lat), Number(lon)]}  // convert strings to numbers
+                    onClick={() => setHue(hue + 20)}
+                />
+            ))}
+            </Map>
+        </div>
     )
 }
 
