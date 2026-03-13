@@ -6,11 +6,51 @@ import { ViewMap } from "../components/mapintegration";
 import { getDatabase, ref, onValue } from "firebase/database";
 import { LoggedOutProviderBar } from '../navbar/notproviderbar';
 import { EventCards } from "../cards/eventcards";
+import { useEffect, useState } from "react";
 
 
 export function HealthEvents(){
     const filtereditems1 = ['Any Date', 'Today', 'This Weekend'];
     const filtereditems2 = ['All Events', 'Vaccine Drives', 'Health Screenings'];
+
+    const [events, setEvents] = useState({})
+    const [eventsCoords, seteventsCoords] = useState({});
+    useEffect(() => {
+        const db = getDatabase(); // fetch the database
+        const eventRef = ref(db, "healthevents"); // get a reference to the database, at clinicalalternaties
+        const unregisterFunction = onValue(eventRef, (s) => {
+            
+            setEvents(s.val());
+        }, (error) => {
+            console.error("Error fetching clinics:", error);
+        });
+        return () => unregisterFunction();
+    }, []);
+
+    const allevents = Object.entries(events)
+    console.log(allevents)
+
+    useEffect(() => {
+        if (Object.keys(events).length === 0) return; // wait for clinics to load
+
+        const geocodeAll = async () => {
+            const coords = {};
+            for (const [name, info] of Object.entries(events)) {
+                if (info.Address.includes("Multiple")) continue;
+                const encoded = encodeURIComponent(info.Address);
+                const res = await fetch(`https://nominatim.openstreetmap.org/search?q=${encoded}&format=json`, {
+                    headers: { 'User-Agent': `healthiswealth (${import.meta.env.VITE_CONTACT_EMAIL})` }  // backticks!
+                });
+                const data = await res.json();
+                if (data[0]) coords[name] = { lat: data[0].lat, lon: data[0].lon };
+                await new Promise(r => setTimeout(r, 1000));
+            }
+            seteventsCoords(coords);
+        };
+        geocodeAll();
+    }, [events]); 
+
+
     return(
         <>
         <header>
@@ -28,12 +68,12 @@ export function HealthEvents(){
         <main className="container">
                 <div>
                     <div className="list-view">
-                        <EventCards/>
-                        <EventCards/>
-                        <EventCards/>
+                                                {allevents.map(([Name, allevents]) => (
+                                                    <EventCards key={Name} allevents={allevents} />
+                                                ))}
                     </div>
                 </div>
-                <ViewMap/>
+                <ViewMap coords={eventsCoords}/>
             </main>
         </>
     )
