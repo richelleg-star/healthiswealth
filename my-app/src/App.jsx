@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Routes, Route, Outlet, Navigate } from 'react-router';
+import { Routes, Route, Outlet, Navigate } from 'react-router-dom';
 import { Homepage } from './pages/homepage';
 import { HealthEvents } from './pages/healthevents';
 import { ref, onValue, getDatabase} from "firebase/database"

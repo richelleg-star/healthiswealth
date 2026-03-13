@@ -1,6 +1,6 @@
 import React from "react";
 import { LoggedOutProviderBar } from '../navbar/notproviderbar'
-import { Link, useNavigate, NavLink } from "react-router";
+import { Link, useNavigate, NavLink } from "react-router-dom";
 import { SearchFunction } from '../components/searchfunction'
 import { BrowseCards } from "../cards/regularcards";
 import { ViewMap } from "../components/mapintegration";
