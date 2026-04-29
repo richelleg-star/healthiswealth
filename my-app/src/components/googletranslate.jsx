@@ -25,6 +25,6 @@ export function GoogleTranslate() {
   }, []);
 
   return (
-    <div id="google_translate_element"></div>
+  <div id="google_translate_element" style={{ minWidth: '150px', minHeight: '30px' }}></div>
   );
 }
