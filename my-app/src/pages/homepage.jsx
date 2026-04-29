@@ -62,7 +62,7 @@ export function Homepage(props){
         <body>
         <div id="patient-view" className="view-section active">
             <section className="hero">
-                <h1>Find Affordable Care, Instantly.</h1>
+                <h1>{props.heroTitle || "Find Affordable Care, Instantly."}</h1>
                 <p>No hidden fees. No language barriers. Search for free, sliding-scale, and community clinics near you in King County.</p>
             </section>
             <SearchFunction filteritems1={filtereditems1} filteritems2={filtereditems2}/>
