@@ -10,6 +10,8 @@ Our project utilizes a few tools, including:
 - hosting on Render
 - React.JS, HTML and CSS for building
 
+PLEASE NOTE: This project was debugged with Claude AI; any code that was specifically generated will have a comment, including the lines that it wrote and the purpose for the generated code. 
+
 ## How to Build, Deploy, and Contribute to the Codebase
 ---
 If you would like to build and deploy with the code:
