@@ -1,10 +1,15 @@
 import React from "react";
 import { getDatabase, ref, onValue } from "firebase/database";
+import { CalendarIntegration } from "../components/calendarintegration";
+import { ViewDetails } from "../components/viewdetails";
 
 export function EventCards(props){
 
 const alleventinfo = props.allevents
 console.log(alleventinfo)
+
+// props for the allevents
+
 
 // on click function for directions
 const eventAddress = (alleventinfo.Address).replace(/[,\s]+/g, '+')
@@ -19,8 +24,6 @@ const openInNewTab = (url) => {
 // http://maps.google.com/?q=your+query <- how each url should be handled
 // example of a valud url: http://maps.google.com/?q=305+Harrison+St+Seattle+WA+98109
 
-// future looking for event reminders: https://add-to-calendar-button.com/use-with-react
-
 const alleventinfoTags = alleventinfo.Tags
 
 let WalkinOrApt = ''
@@ -30,6 +33,7 @@ if(alleventinfo.needapt == true){
 else(
     WalkinOrApt = 'Walk-in Accepted'
 )
+
 
 
 console.log(eventAddress)
@@ -67,8 +71,15 @@ return(
         <div className="card-actions">
             <div className="btn-group">
                 <button className="btn btn-primary" onClick={openInNewTab}>Get Directions</button>
-                <a className="btn btn-outline">View Details</a>
-                <button className="btn btn-outline">Set Reminder</button>
+                <viewDetails/>
+                <CalendarIntegration
+                    name={alleventinfo['Name']}
+                    startDate = {alleventinfo['Date Start']}
+                    endDate = {alleventinfo['Date Start']}
+                    location = {alleventinfo['Address']}
+                    language = {alleventinfo['Language Spoken']}
+                    link = {alleventinfo['link']}
+                />
                 
             </div>
             <div className="info-row"> 
