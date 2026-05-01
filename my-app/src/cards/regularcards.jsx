@@ -1,6 +1,9 @@
 import React from "react"
 import { useState } from "react"
+import { ViewDetails } from "../components/viewdetails"
+
 export function BrowseCards(props){
+
 
 const allclinicinfo = props.clinicinfo
 console.log(allclinicinfo)
@@ -59,13 +62,17 @@ return(
                 {allclinicinfo.Address !== "Multiple Locations; See More Details" && (
                     <>
                     <button className="btn btn-primary" onClick={openInNewTab}>Get Directions</button>
-                    <a className="btn btn-outline">View Details</a> 
+                    <ViewDetails 
+                        clinicinfo={props.clinicinfo} 
+                        onViewDetails={props.onViewDetails}
+                    />
                     </>
                 )}
                 {allclinicinfo.Address == "Multiple Locations; See More Details" && (
-                    <>
-                    <a className="btn btn-primary">View Details</a> 
-                    </>
+                    <ViewDetails 
+                        clinicinfo={props.clinicinfo} 
+                        onViewDetails={props.onViewDetails}
+                    />
                 )}
                 
                 

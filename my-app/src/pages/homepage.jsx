@@ -17,6 +17,11 @@ export function Homepage(props){
     const db = getDatabase()
     const [clinics, setClinics] = useState({})
     const [clinicCoords, setClinicCoords] = useState({});
+    const [modalContent, setModalContent] = useState(null); // this is for the popup; 
+    // because of issues with the dom (pops up are stuck inside the card if you don't adjust for it)
+    // you have to unfortunately adjust it so the pop can escape the card by putting it inside the body instead
+    // because of the way this is set up, we have to pass these as props through each call of the div
+    // sucht hat it will go homepage/page -> card -> viewdetails specfically
 
 // This will listen to our database and get the values need on each render
     useEffect(() => {
@@ -70,7 +75,11 @@ export function Homepage(props){
                 <div>
                     <div className="list-view">
                         {allclinics.map(([Name, clinicinfo]) => (
-                            <BrowseCards key={Name} clinicinfo={clinicinfo} />
+                            <BrowseCards 
+                                key={Name} 
+                                clinicinfo={clinicinfo}
+                                onViewDetails={(info) => setModalContent(info)}
+                            />
                         ))}
                     </div>
                 </div>
@@ -78,6 +87,14 @@ export function Homepage(props){
             </main>
         </div>
         </body>
+            {modalContent && (
+                <div className="modal-overlay" onClick={() => setModalContent(null)}>
+                    <div className="modal" onClick={(e) => e.stopPropagation()}>
+                        <h2>{modalContent.Name}</h2>
+                        <p>{modalContent.Address}</p>
+                    </div>
+                </div>
+            )}
         <FooterForWeb/>
         </>
     )

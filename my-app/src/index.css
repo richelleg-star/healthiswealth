@@ -188,7 +188,83 @@ nav a {
         .btn-search:hover {
             background-color: var(--primary-hover);
         }
-  
+
+/* Calendar Dropdown */
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.dropdown-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    z-index: 9999;
+    background-color: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    list-style: none;
+    margin: 0.25rem 0 0 0;
+    padding: 0.5rem;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    width: 320px;
+}
+
+.dropdown-item {
+    width: calc(50% - 0.25rem);
+}
+
+.dropdown-item button {
+    width: 100%;
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    font-family: inherit;
+    color: var(--primary);
+    background: none;
+    border: 1px solid var(--primary);
+    border-radius: 6px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.15s;
+    white-space: nowrap;
+}
+
+.dropdown-item button:hover {
+    background-color: var(--primary);
+    color: white;
+}
+
+
+/* dark overlay behind the modal */
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+/* the actual modal box */
+.modal {
+    background-color: var(--card-bg);
+    border-radius: 12px;
+    padding: 2rem;
+    width: 90%;
+    max-width: 600px;
+    max-height: 80vh;
+    overflow-y: auto;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+    position: relative;
+    z-index: 1001;
+}
+
 /* Card Section + Card Changes */
 
 .container {
@@ -398,6 +474,9 @@ nav a {
             border-radius: 8px;
             font-weight: 600;
 }
+
+
+
 /* footer */
 
             .site-footer{
