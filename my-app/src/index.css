@@ -731,9 +731,33 @@ nav a {
 .auth-switch a:hover {
     text-decoration: underline;
 }
-
-#signup-form {
+/* unsure */
+/* #signup-form {
     display: none;
+} */
+.auth-switch button {
+    color: var(--primary);
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    border: none;
+    background: none;
+    font-family: inherit;
+    font-size: 0.95rem;
+    padding: 0;
+}
+
+.auth-switch button:hover {
+    text-decoration: underline;
+}
+
+.name-row {
+    display: flex;
+    gap: 1rem;
+}
+
+.name-row .form-group {
+    flex: 1;
 }
 
 @media (max-width: 900px) {
