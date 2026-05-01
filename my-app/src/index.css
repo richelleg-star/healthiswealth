@@ -653,13 +653,25 @@ nav a {
             }         
             /* Transform modal into an iOS-style Bottom Sheet */
             .modal-overlay {
-                align-items: flex-end; /* Pushes the modal to the bottom edge */
+                align-items: flex-end; 
+            }
+            /* Mobile Close Button Fix */
+            .modal-close-btn {
+                top: 1.25rem;
+                right: 1rem;
+                background-color: #f1f5f9; 
+                z-index: 1005;
+            }
+
+            .modal h2 {
+                padding-right: 3rem; 
+                font-size: 1.5rem;
             }
 
             .modal {
                 width: 100%;
                 max-width: none;
-                border-radius: 24px 24px 0 0; /* Rounds the top corners */
+                border-radius: 24px 24px 0 0; 
                 padding: 2rem 1.5rem 3rem 1.5rem; 
                 animation: bottomSheetSlide 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
             }
@@ -668,39 +680,33 @@ nav a {
             from { transform: translateY(100%); }
             to { transform: translateY(0); }
         }       
-            /* Mobile Calendar Dropdown Fix */
+            /* Mobile Calendar Fix: Bottom Sheet */
             .dropdown-menu {
-                position: static; 
+                position: fixed; /* Breaks the menu completely out of the card */
+                bottom: 0;
+                left: 0;
                 width: 100%;
-                box-shadow: none; 
+                z-index: 10005; /* Forces it above all other cards and navbars */
+                background-color: var(--card-bg);
+                border-radius: 24px 24px 0 0; /* Rounds only the top corners */
+                padding: 2.5rem 1.5rem 3rem 1.5rem;
+                box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.2);
+                margin: 0;
                 border: none;
-                border-left: 2px solid var(--primary); /* visual indicator line */
-                border-radius: 0;
-                padding-left: 1rem;
-                margin-top: 0.5rem;
-            
-                /* Simpler fade for mobile so it doesn't mess-up the layout */
-                animation: fadeIn 0.2s ease-out forwards;
-            }        
-            /* Mobile Calendar Dropdown Fix */
-            .dropdown-menu {
-                position: static; /* Stops it from floating */
-                width: 100%;
-                box-shadow: none; 
-                border: none;
-                border-left: 2px solid var(--primary); /*  visual indicator line */
-                border-radius: 0;
-                padding-left: 1rem;
-                margin-top: 0.5rem;
-            
-            /* Simpler fade for mobile so it doesn't mess-up the layout */
-            animation: fadeIn 0.2s ease-out forwards;
-        }
+                animation: bottomSheetSlide 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            }
 
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
+            .dropdown-menu::before {
+                content: '';
+                position: absolute;
+                top: 12px;
+                left: 50%;
+                transform: translateX(-50%);
+                width: 40px;
+                height: 5px;
+                background-color: #cbd5e1;
+                border-radius: 4px;
+            }
 
         @keyframes fadeIn {
             from { opacity: 0; }
