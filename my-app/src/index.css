@@ -256,29 +256,74 @@ nav a {
 }
 
 
-/* dark overlay behind the modal */
+/* Desktop Modal Styles */
+
 .modal-overlay {
     position: fixed;
     inset: 0;
-    background-color: rgba(0, 0, 0, 0.5);
+    /* Uses dark theme color with a frosted glass blur effect */
+    background-color: rgba(15, 23, 42, 0.5); 
+    backdrop-filter: blur(4px); 
     display: flex;
     justify-content: center;
     align-items: center;
     z-index: 1000;
+    animation: fadeIn 0.2s ease-out forwards;
 }
 
-/* the actual modal box */
 .modal {
     background-color: var(--card-bg);
-    border-radius: 12px;
-    padding: 2rem;
+    border-radius: 16px;
+    padding: 2.5rem;
     width: 90%;
     max-width: 600px;
-    max-height: 80vh;
+    max-height: 85vh;
     overflow-y: auto;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
     position: relative;
     z-index: 1001;
+    /* Smooth scale and slide up animation */
+    animation: modalScaleUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.modal h2 {
+    margin-top: 0;
+    color: var(--text-main);
+    padding-right: 2rem; /* Leaves room for the close button */
+}
+
+/* Close Button Styling */
+.modal-close-btn {
+    position: absolute;
+    top: 1.5rem;
+    right: 1.5rem;
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    padding: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: all 0.2s;
+}
+
+.modal-close-btn:hover {
+    background-color: #f1f5f9;
+    color: var(--text-main);
+}
+
+/* Animations */
+@keyframes modalScaleUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px) scale(0.98);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
 }
 
 /* Card Section + Card Changes */
@@ -605,7 +650,24 @@ nav a {
             .provider-dashboard {
                 padding: 0 1rem;
                 margin: 1.5rem auto;
-            }        
+            }         
+            /* Transform modal into an iOS-style Bottom Sheet */
+            .modal-overlay {
+                align-items: flex-end; /* Pushes the modal to the bottom edge */
+            }
+
+            .modal {
+                width: 100%;
+                max-width: none;
+                border-radius: 24px 24px 0 0; /* Rounds the top corners */
+                padding: 2rem 1.5rem 3rem 1.5rem; 
+                animation: bottomSheetSlide 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            }
+
+        @keyframes bottomSheetSlide {
+            from { transform: translateY(100%); }
+            to { transform: translateY(0); }
+        }       
             /* Mobile Calendar Dropdown Fix */
             .dropdown-menu {
                 position: static; 
