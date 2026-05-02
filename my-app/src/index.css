@@ -707,6 +707,9 @@ nav a {
                 background-color: #cbd5e1;
                 border-radius: 4px;
             }
+            .card:hover {
+                transform: none !important;
+            }
 
         @keyframes fadeIn {
             from { opacity: 0; }
