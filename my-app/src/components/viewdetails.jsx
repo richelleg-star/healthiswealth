@@ -1,9 +1,9 @@
-import { useState } from "react";
+import { createPortal } from "react-dom";
 
 export function ViewDetails(props) {
     return (
-        <button 
-            className="btn btn-outline" 
+        <button
+            className="btn btn-outline"
             onClick={() => props.onViewDetails(props.clinicinfo)}
         >
             View Details
