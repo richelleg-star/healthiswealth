@@ -214,22 +214,9 @@ nav a {
     flex-direction: column;
     gap: 0.25rem;
     min-width: 200px; 
-
-    /* Smooth slide-in animation when React mounts it */
     animation: slideDown 0.2s ease-out forwards;
 }
 
-/* The animation for when the button is clicked */
-@keyframes slideDown {
-    from {
-        opacity: 0;
-        transform: translateY(-10px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
 
 .dropdown-item {
     width: 100%;
@@ -314,17 +301,6 @@ nav a {
     color: var(--text-main);
 }
 
-/* Animations */
-@keyframes modalScaleUp {
-    from {
-        opacity: 0;
-        transform: translateY(20px) scale(0.98);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-    }
-}
 
 /* Card Section + Card Changes */
 
@@ -561,7 +537,8 @@ nav a {
                 flex-direction: column;
                 padding: 1rem;
                 gap: 1rem;
-                position: static;
+                position: relative;
+                z-index: 100;
             }
             
             nav {
@@ -690,6 +667,8 @@ nav a {
             .modal {
                 width: 100vw !important;
                 max-width: none !important;
+                max-height: 90vh !important;
+                overflow-y: auto !important;
                 border-radius: 24px 24px 0 0 !important; 
                 padding: 2rem 1.5rem 3rem 1.5rem !important; 
                 margin: 0 !important;
@@ -707,21 +686,12 @@ nav a {
             .modal h2 {
                 padding-right: 3rem !important; 
                 font-size: 1.5rem !important;
-            }
-
-            @keyframes bottomSheetSlide {
-                from { transform: translateY(100%); }
-                to { transform: translateY(0); }
-            }  
+            } 
             
             .card:hover {
                 transform: none !important;
             }
 
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
 
             .dashboard-grid {
                 grid-template-columns: 1fr;
@@ -914,4 +884,24 @@ nav a {
         padding: 3rem 1.5rem;
         align-items: flex-start;
     }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes bottomSheetSlide {
+    from { transform: translateY(100%); }
+    to { transform: translateY(0); }
+}
+
+@keyframes slideDown {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes modalScaleUp {
+    from { opacity: 0; transform: translateY(20px) scale(0.98); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
 }
