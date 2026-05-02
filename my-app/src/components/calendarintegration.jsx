@@ -1,7 +1,10 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
+import { createPortal } from "react-dom";
 
 export function CalendarIntegration(props) {
   const [open, setOpen] = useState(false); // this prop is used for the dropdown button in react
+  const [menuStyle, setMenuStyle] = useState({});
+  const buttonRef = useRef(null);
 
   // convert our dates so they are properly formatted
   const formatDate = (dateStr) => {
@@ -42,34 +45,69 @@ export function CalendarIntegration(props) {
     { label: "Yahoo Calendar", url: yahooUrl, target: "_blank" },
   ];
 
+  // Position the portal menu below the button on desktop; CSS handles mobile bottom sheet
+  const handleOpen = () => {
+    if (!open && buttonRef.current) {
+      const rect = buttonRef.current.getBoundingClientRect();
+      const isMobile = window.innerWidth <= 768;
+      if (isMobile) {
+        // On mobile, let CSS handle it as a bottom sheet and don't set fixed positioning
+        setMenuStyle({});
+      } else {
+        // On desktop, anchor the menu below the button
+        setMenuStyle({
+          position: "fixed",
+          top: rect.bottom + 8,
+          left: rect.left,
+          zIndex: 9999,
+        });
+      }
+    }
+    setOpen(!open);
+  };
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    if (!open) return;
+    const handleClickOutside = (e) => {
+      if (buttonRef.current && !buttonRef.current.closest(".dropdown").contains(e.target)) {
+        setOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [open]);
+
   return (
     <div className="dropdown">
-      <button className="btn btn-outline" onClick={() => setOpen(!open)}>
+      <button ref={buttonRef} className="btn btn-outline" onClick={handleOpen}>
         Add to Calendar
       </button>
 
-      {open && ( // if the overlay was open
-        <ul className="dropdown-menu">
-            {calendars.map(({ label, url, target, download }) => (
+      {open && createPortal( 
+        <ul className="dropdown-menu" style={menuStyle}>
+          {calendars.map(({ label, url, target, download }) => (
             <li key={label} className="dropdown-item">
-                <button className="btn btn-outline"
+              <button
+                className="btn btn-outline"
                 onClick={() => {
-                    if (download) {
+                  if (download) {
                     const link = document.createElement("a");
                     link.href = url;
                     link.download = download;
                     link.click();
-                    } else {
+                  } else {
                     window.open(url, target);
-                    }
-                    setOpen(false);
+                  }
+                  setOpen(false);
                 }}
-                >
+              >
                 {label}
-                </button>
+              </button>
             </li>
-            ))}
-        </ul>
+          ))}
+        </ul>,
+        document.body
       )}
     </div>
   );

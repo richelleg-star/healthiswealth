@@ -1,13 +1,14 @@
 import React from "react"
 import { useState } from "react"
-import { ViewDetails } from "../components/viewdetails"
+import { ViewDetails, DetailsModal } from "../components/viewdetails"
 
 export function BrowseCards(props){
-
 
 const allclinicinfo = props.clinicinfo
 console.log(allclinicinfo)
 console.log(allclinicinfo.Name)
+
+const [selected, setSelected] = useState(null);
 
 const clinicAddress = (allclinicinfo.Address).replace(/[,\s]+/g, '+')
 const mapsurl = 'https://maps.google.com/?q=' + clinicAddress
@@ -16,8 +17,6 @@ const openInNewTab = (url) => {
   const newWindow = window.open(mapsurl, '_blank', 'noopener,noreferrer')
   if (newWindow) newWindow.opener = null
 }
-
-
 
 console.log(allclinicinfo.Address)
 
@@ -64,23 +63,22 @@ return(
                     <button className="btn btn-primary" onClick={openInNewTab}>Get Directions</button>
                     <ViewDetails 
                         clinicinfo={props.clinicinfo} 
-                        onViewDetails={props.onViewDetails}
+                        onViewDetails={setSelected}
                     />
                     </>
                 )}
                 {allclinicinfo.Address == "Multiple Locations; See More Details" && (
                     <ViewDetails 
                         clinicinfo={props.clinicinfo} 
-                        onViewDetails={props.onViewDetails}
+                        onViewDetails={setSelected}
                     />
                 )}
-                
-                
             </div>
             <div className="info-row"> 
                 🚍 Bus 7 (2 min walk)
             </div>
         </div>
+        <DetailsModal selectedItem={selected} onClose={() => setSelected(null)} />
     </div>
 )
 

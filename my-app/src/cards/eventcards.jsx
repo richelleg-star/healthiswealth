@@ -1,13 +1,14 @@
 import React from "react";
 import { getDatabase, ref, onValue } from "firebase/database";
 import { CalendarIntegration } from "../components/calendarintegration";
-import { ViewDetails } from "../components/viewdetails";
+import { ViewDetails, DetailsModal } from "../components/viewdetails";
 
 export function EventCards(props){
 
 const alleventinfo = props.allevents
 console.log(alleventinfo)
 
+const [selected, setSelected] = useState(null);
 // props for the allevents
 
 
@@ -41,9 +42,6 @@ console.log(eventAddress)
 
 
 return(
-
-    
-
     <div className="card">
         <div className="card-header">
             <div>
@@ -71,7 +69,7 @@ return(
         <div className="card-actions">
             <div className="btn-group">
                 <button className="btn btn-primary" onClick={openInNewTab}>Get Directions</button>
-                <viewDetails/>
+                <ViewDetails clinicinfo={alleventinfo} onViewDetails={setSelected} />
                 <CalendarIntegration
                     name={alleventinfo['Name']}
                     startDate = {alleventinfo['Date Start']}
@@ -86,6 +84,7 @@ return(
                 🚍 Bus 7 (2 min walk)
             </div>
         </div>
+        <DetailsModal selectedItem={selected} onClose={() => setSelected(null)} />
     </div>
 )
 
