@@ -651,49 +651,22 @@ nav a {
                 padding: 0 1rem;
                 margin: 1.5rem auto;
             }         
-            /* Transform modal into an iOS-style Bottom Sheet */
-            .modal-overlay {
-                align-items: flex-end; 
-            }
-            /* Mobile Close Button Fix */
-            .modal-close-btn {
-                top: 1.25rem;
-                right: 1rem;
-                background-color: #f1f5f9; 
-                z-index: 1005;
-            }
-
-            .modal h2 {
-                padding-right: 3rem; 
-                font-size: 1.5rem;
-            }
-
-            .modal {
-                width: 100%;
-                max-width: none;
-                border-radius: 24px 24px 0 0; 
-                padding: 2rem 1.5rem 3rem 1.5rem; 
-                animation: bottomSheetSlide 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-            }
-
-        @keyframes bottomSheetSlide {
-            from { transform: translateY(100%); }
-            to { transform: translateY(0); }
-        }       
+               
             /* Mobile Calendar Fix: Bottom Sheet */
             .dropdown-menu {
-                position: fixed; 
-                bottom: 0;
-                left: 0;
-                width: 100%;
-                z-index: 10005; 
-                background-color: var(--card-bg);
-                border-radius: 24px 24px 0 0; 
-                padding: 2.5rem 1.5rem 3rem 1.5rem;
-                box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.2);
-                margin: 0;
-                border: none;
-                animation: bottomSheetSlide 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+                position: fixed !important; 
+                top: auto !important; 
+                bottom: 0 !important;
+                left: 0 !important;
+                width: 100vw !important; 
+                z-index: 10005 !important; 
+                background-color: var(--card-bg) !important;
+                border-radius: 24px 24px 0 0 !important; 
+                padding: 2.5rem 1.5rem 3rem 1.5rem !important;
+                box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.2) !important;
+                margin: 0 !important;
+                border: none !important;
+                animation: bottomSheetSlide 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards !important;
             }
 
             .dropdown-menu::before {
@@ -707,6 +680,40 @@ nav a {
                 background-color: #cbd5e1;
                 border-radius: 4px;
             }
+
+            /* Transform modal into an iOS-style Bottom Sheet */
+            .modal-overlay {
+                align-items: flex-end !important; 
+                padding: 0 !important;
+            }
+
+            .modal {
+                width: 100vw !important;
+                max-width: none !important;
+                border-radius: 24px 24px 0 0 !important; 
+                padding: 2rem 1.5rem 3rem 1.5rem !important; 
+                margin: 0 !important;
+                animation: bottomSheetSlide 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards !important;
+            }
+
+            /* Mobile Close Button Fix */
+            .modal-close-btn {
+                top: 1.25rem !important;
+                right: 1rem !important;
+                background-color: #f1f5f9 !important; 
+                z-index: 10005 !important;
+            }
+
+            .modal h2 {
+                padding-right: 3rem !important; 
+                font-size: 1.5rem !important;
+            }
+
+            @keyframes bottomSheetSlide {
+                from { transform: translateY(100%); }
+                to { transform: translateY(0); }
+            }  
+            
             .card:hover {
                 transform: none !important;
             }

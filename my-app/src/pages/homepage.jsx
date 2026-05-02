@@ -64,7 +64,7 @@ export function Homepage(props){
         <header>
             <LoggedOutProviderBar/>
         </header>
-        <main>
+        <body>
         <div id="patient-view" className="view-section active">
             <section className="hero">
                 <h1>Find Affordable Care, Instantly.</h1>
@@ -86,7 +86,7 @@ export function Homepage(props){
                 <ViewMap coords = {clinicCoords}/>
             </main>
         </div>
-        </main>
+        </body>
             {modalContent && (
                 <div className="modal-overlay" onClick={() => setModalContent(null)}>
                     <div className="modal" onClick={(e) => e.stopPropagation()}>
