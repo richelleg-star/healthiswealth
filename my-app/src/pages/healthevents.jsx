@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { SearchFunction } from "../components/searchfunction";
 import { Link, useNavigate, NavLink } from "react-router";
 import { BrowseCards } from "../cards/regularcards";
@@ -6,7 +6,6 @@ import { ViewMap } from "../components/mapintegration";
 import { getDatabase, ref, onValue } from "firebase/database";
 import { LoggedOutProviderBar } from '../navbar/notproviderbar';
 import { EventCards } from "../cards/eventcards";
-import { useEffect, useState } from "react";
 import { FooterForWeb } from "../navbar/footer";
 
 export function HealthEvents(){
@@ -20,14 +19,14 @@ export function HealthEvents(){
         const eventRef = ref(db, "healthevents"); // get a reference to the database, at clinicalalternaties
         const unregisterFunction = onValue(eventRef, (s) => {
             
-            setEvents(s.val());
+            setEvents(s.val() ?? {});
         }, (error) => {
             console.error("Error fetching clinics:", error);
         });
         return () => unregisterFunction();
     }, []);
 
-    const allevents = Object.entries(events)
+    const allevents = events ? Object.entries(events) : []
     console.log(allevents)
 
     useEffect(() => {
@@ -68,8 +67,8 @@ export function HealthEvents(){
         <main className="container">
                 <div>
                     <div className="list-view">
-                                                {allevents.map(([Name, allevents]) => (
-                                                    <EventCards key={Name} allevents={allevents} />
+                                                {allevents.map(([Name, eventData]) => (
+                                                    <EventCards key={Name} allevents={eventData} />
                                                 ))}
                     </div>
                 </div>

@@ -1,31 +1,26 @@
-import React from "react";
-import { getDatabase, ref, onValue } from "firebase/database";
+import React, { useState } from "react";
 import { CalendarIntegration } from "../components/calendarintegration";
 import { ViewDetails, DetailsModal } from "../components/viewdetails";
 
 export function EventCards(props){
 
 const alleventinfo = props.allevents
-console.log(alleventinfo)
-
 const [selected, setSelected] = useState(null);
 // props for the allevents
 
 
 // on click function for directions
-const eventAddress = (alleventinfo.Address).replace(/[,\s]+/g, '+')
+const eventAddress = (alleventinfo.Address ?? '').replace(/[,\s]+/g, '+')
 const mapsurl = 'https://maps.google.com/?q=' + eventAddress
 
 const openInNewTab = (url) => {
   const newWindow = window.open(mapsurl, '_blank', 'noopener,noreferrer')
   if (newWindow) newWindow.opener = null
 }
-// 
 
 // http://maps.google.com/?q=your+query <- how each url should be handled
 // example of a valud url: http://maps.google.com/?q=305+Harrison+St+Seattle+WA+98109
-
-const alleventinfoTags = alleventinfo.Tags
+const alleventinfoTags = Array.isArray(alleventinfo.Tags) ? alleventinfo.Tags : [];
 
 let WalkinOrApt = ''
 if(alleventinfo.needapt == true){
@@ -35,13 +30,8 @@ else(
     WalkinOrApt = 'Walk-in Accepted'
 )
 
-
-
-console.log(eventAddress)
-
-
-
 return(
+    <>
     <div className="card">
         <div className="card-header">
             <div>
@@ -62,8 +52,8 @@ return(
                 {WalkinOrApt} ({alleventinfo.Time})
         </div>
         <div className="tags">
-                        {alleventinfoTags.map((s) => (
-                            <span className="tag">{s}</span>
+                        {alleventinfoTags.map((s, i) => (
+                            <span key={i} className="tag">{s}</span>
                         ))}
         </div>
         <div className="card-actions">
@@ -72,24 +62,23 @@ return(
                 <ViewDetails clinicinfo={alleventinfo} onViewDetails={setSelected} />
                 <CalendarIntegration
                     name={alleventinfo['Name']}
-                    startDate = {alleventinfo['Date Start']}
-                    endDate = {alleventinfo['Date Start']}
-                    location = {alleventinfo['Address']}
-                    language = {alleventinfo['Language Spoken']}
-                    link = {alleventinfo['link']}
+                    startDate={alleventinfo['Date Start']}
+                    endDate={alleventinfo['Date Start']}
+                    location={alleventinfo['Address']}
+                    language={alleventinfo['Language Spoken']}
+                    link={alleventinfo['link']}
                 />
-                
             </div>
             <div className="info-row"> 
                 🚍 Bus 7 (2 min walk)
             </div>
         </div>
-        <DetailsModal selectedItem={selected} onClose={() => setSelected(null)} />
     </div>
+    <DetailsModal selectedItem={selected} onClose={() => setSelected(null)} />
+    </>
 )
 
-}
+}                           
 
 //style="margin:0; font-size: 0.8rem;" <- this is related to the style margines
                         
-                            
