@@ -1,8 +1,19 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Link, useNavigate, NavLink } from "react-router-dom";
 
 function handleLanguageChange(e) {
     const lang = e.target.value;
+
+    if (lang === 'en') {
+        localStorage.removeItem('preferredLanguage');
+        document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+        document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=' + window.location.hostname;
+        window.location.reload();
+        return;
+    }
+
+    localStorage.setItem('preferredLanguage', lang);
+
     const tryTranslate = (attempts = 0) => {
         const googSelect = document.querySelector('.goog-te-combo');
         if (googSelect) {
@@ -16,6 +27,26 @@ function handleLanguageChange(e) {
 }
 
 export function LoggedOutProviderBar(){
+
+    useEffect(() => {
+        const saved = localStorage.getItem('preferredLanguage');
+        if (!saved || saved === 'en') return;
+
+        const select = document.querySelector('[aria-label="Select Language"]');
+        if (select) select.value = saved;
+
+        const tryTranslate = (attempts = 0) => {
+            const googSelect = document.querySelector('.goog-te-combo');
+            if (googSelect) {
+                googSelect.value = saved;
+                googSelect.dispatchEvent(new Event('change'));
+            } else if (attempts < 10) {
+                setTimeout(() => tryTranslate(attempts + 1), 300);
+            }
+        };
+        tryTranslate();
+    }, []);
+
     return(
         <>
                 <div className="logo">
@@ -53,5 +84,4 @@ export function LoggedOutProviderBar(){
                 </nav>
         </>
     )
-    
 }
