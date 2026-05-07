@@ -32,6 +32,7 @@ else(
 )
 
 return(
+    <>
     <div className="card">
         <div className="card-header">
             <div>
@@ -78,8 +79,9 @@ return(
                 🚍 Bus 7 (2 min walk)
             </div>
         </div>
-        <DetailsModal selectedItem={selected} onClose={() => setSelected(null)} />
     </div>
+    <DetailsModal selectedItem={selected} onClose={() => setSelected(null)} />
+    </>
 )
 
 }
