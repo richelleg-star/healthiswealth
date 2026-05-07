@@ -1,14 +1,9 @@
 import React from "react"
-import { useState } from "react"
-import { ViewDetails, DetailsModal } from "../components/viewdetails"
+import { ViewDetails } from "../components/viewdetails"
 
 export function BrowseCards(props){
 
 const allclinicinfo = props.clinicinfo
-console.log(allclinicinfo)
-console.log(allclinicinfo.Name)
-
-const [selected, setSelected] = useState(null);
 
 const clinicAddress = (allclinicinfo.Address).replace(/[,\s]+/g, '+')
 const mapsurl = 'https://maps.google.com/?q=' + clinicAddress
@@ -32,7 +27,6 @@ else(
 )
 
 return(
-    <>
     <div className="card">
         <div className="card-header">
             <div>
@@ -64,14 +58,14 @@ return(
                     <button className="btn btn-primary" onClick={openInNewTab}>Get Directions</button>
                     <ViewDetails 
                         clinicinfo={props.clinicinfo} 
-                        onViewDetails={setSelected}
+                        onViewDetails={props.onViewDetails}
                     />
                     </>
                 )}
                 {allclinicinfo.Address == "Multiple Locations; See More Details" && (
                     <ViewDetails 
                         clinicinfo={props.clinicinfo} 
-                        onViewDetails={setSelected}
+                        onViewDetails={props.onViewDetails}
                     />
                 )}
             </div>
@@ -80,12 +74,8 @@ return(
             </div>
         </div>
     </div>
-    <DetailsModal selectedItem={selected} onClose={() => setSelected(null)} />
-    </>
 )
 
 }
 
 //style="margin:0; font-size: 0.8rem;" <- this is related to the style margines
-                        
-                            
