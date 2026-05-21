@@ -98,6 +98,11 @@ nav a {
             align-items: center;
             gap: 0.5rem;
         }
+        
+        .logo img {
+            image-rendering: crisp-edges;
+            object-fit: contain;
+        }
 
         .logo span {
             color: var(--secondary);
