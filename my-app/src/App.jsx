@@ -7,6 +7,7 @@ import {ProviderLoginPage} from "./pages/providerlogin"
 import { ProviderSignupPage } from './pages/providersignup';
 import { EditClinic } from "./providerview/editclinic";
 import { AddEvent } from "./providerview/addevent";
+import { DeleteEventPage } from './providerview/deleteevent';
 
 export default function App() {
   return (
@@ -17,6 +18,7 @@ export default function App() {
       <Route path='provider-signup' element={<ProviderSignupPage/>}/>
       <Route path="editclinic" element={<EditClinic />} />
       <Route path="addevent" element={<AddEvent />} />
+      <Route path="deletevent" element={<DeleteEventPage/>} />
       {/* </Routes><Route path="healthevents" element={<health>} /> */}
     </Routes>
   )

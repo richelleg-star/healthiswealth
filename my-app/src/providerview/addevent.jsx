@@ -37,22 +37,21 @@ export function AddEvent() {
 
         try {
             const db = getDatabase();
-            // Push a new event under healthevents — all fields below are public
             const eventsRef = ref(db, 'healthevents');
             const newEventRef = push(eventsRef);
 
             await fireSet(newEventRef, {
-                eventName,
-                eventDate,
-                eventTime,
-                eventLocation,
-                serviceType,
-                cost,
-                walkIn,
-                languages,
+                Name,
+                "Date End": dateEnd,
+                "Date Start": dateStart,
+                Address,
+                Time,
+                freeOrLowCost,
+                needapt,
+                "Language Spoken": languages,
                 notes,
                 // Store which clinic posted this event
-                postedBy: user.uid,
+                uid: user.uid,
             });
 
             alert('Event saved successfully!');
@@ -92,7 +91,7 @@ export function AddEvent() {
                     onChange={(e) => setEventTime(e.target.value)}
                 />
                 <label>Event Location</label>
-                <input
+                <input 
                     type="text"
                     placeholder="123 Main St, Seattle, WA"
                     value={eventLocation}

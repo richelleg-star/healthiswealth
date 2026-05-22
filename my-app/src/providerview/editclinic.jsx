@@ -1,5 +1,6 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
+import { getDatabase, ref, update as fireUpdate, push as firePush, remove} from 'firebase/database';
 
 export function EditClinic() {
     return (
@@ -7,6 +8,9 @@ export function EditClinic() {
             <NavLink to="/homepage" className="logo">
                 HealthIs<span>Wealth</span>
             </NavLink>
+
+            <NavLink to='/addevent'> click here</NavLink>
+            <NavLink to='/deletevent'> click to delete </NavLink>
             <h2>Edit Clinic Information</h2>
             <p>Update the information patients see before visiting your clinic.</p>
             <form>
