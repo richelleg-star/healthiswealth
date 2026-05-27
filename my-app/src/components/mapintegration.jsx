@@ -1,14 +1,48 @@
 import React, { useState } from "react";
 import { Map, Overlay } from 'pigeon-maps';
 
-
 // onclick created with claude, debugged overlay with claude
-export function ViewMap(props) {
-    const coords = props.coords;
+
+export function ViewMap({ coords, isLoading }) {
     const [activePin, setActivePin] = useState(null);
 
     return (
-        <div className="map-container">
+        <div className="map-container" style={{ position: "relative" }}>
+            {/* Loading overlay */}
+            {isLoading && (
+                <div style={{
+                    position: "absolute",
+                    bottom: "16px",
+                    left: "50%",
+                    transform: "translateX(-50%)",
+                    background: "white",
+                    border: "1px solid #e2e8f0",
+                    borderRadius: "999px",
+                    padding: "6px 14px",
+                    fontSize: "0.8rem",
+                    color: "#64748b",
+                    boxShadow: "0 2px 8px rgba(0,0,0,0.12)",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "6px",
+                    zIndex: 200,
+                    pointerEvents: "none",
+                }}>
+                    <span style={{
+                        width: "10px",
+                        height: "10px",
+                        borderRadius: "50%",
+                        border: "2px solid #6d28d9",
+                        borderTopColor: "transparent",
+                        display: "inline-block",
+                        animation: "spin 0.8s linear infinite",
+                    }}/>
+                    Loading map pins...
+                </div>
+            )}
+
+            <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+
             <Map
                 height={window.innerHeight - 128}
                 defaultCenter={[47.44, -122.24]}

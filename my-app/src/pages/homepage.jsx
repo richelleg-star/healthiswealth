@@ -5,10 +5,10 @@ import { SearchFunction } from '../components/searchfunction'
 import { BrowseCards } from "../cards/regularcards";
 import { ViewMap } from "../components/mapintegration";
 import { getDatabase, ref, onValue } from "firebase/database";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { FooterForWeb } from "../navbar/footer";
 import { DetailsModal } from "../components/viewdetails";
-import { geocodeAddress } from "../components/geocode";
+import { geocodeAddress, pruneCache } from "../components/geocode";
 import { filterClinicsByZip } from "../components/filterforzip";
 
 export function Homepage(props){
@@ -17,6 +17,8 @@ export function Homepage(props){
     const [clinicCoords, setClinicCoords] = useState({});
     const [selected, setSelected] = useState(null);
     const [zipQuery, setZipQuery] = useState("");
+    const [isGeocoding, setIsGeocoding] = useState(false);
+    const hasGeocoded = useRef(false); // guard to prevent re-running
 
     useEffect(() => {
         const db = getDatabase();
@@ -34,29 +36,48 @@ export function Homepage(props){
 
     useEffect(() => {
         if (Object.keys(clinics).length === 0) return;
+        if (hasGeocoded.current) return; // already ran, don't repeat
+        hasGeocoded.current = true;
+
+        // Prune stale cache entries for deleted clinics
+        const activeAddresses = [];
+        for (const [, info] of Object.entries(clinics)) {
+            if (!info.Address.includes("Multiple")) {
+                activeAddresses.push(info.Address);
+            } else if (info.branches) {
+                for (const branch of Object.values(info.branches)) {
+                    activeAddresses.push(branch.Address);
+                }
+            }
+        }
+        pruneCache(activeAddresses);
 
         const geocodeAll = async () => {
+            setIsGeocoding(true);
             const coords = {};
 
-            for (const [name, info] of Object.entries(clinics)) {
+            for (const [key, info] of Object.entries(clinics)) {
                 // Single location — geocode top-level address
                 if (!info.Address.includes("Multiple")) {
                     await new Promise(r => setTimeout(r, 1000));
                     const result = await geocodeAddress(info.Address);
-                    if (result) coords[name] = { lat: result.lat, lon: result.lon, address: info.Address, name: info.Name };
+                    if (result) coords[key] = { lat: result.lat, lon: result.lon, address: info.Address, name: info.Name };
 
                 // Multiple locations — geocode each branch individually
                 } else if (info.branches) {
                     for (const [branchKey, branch] of Object.entries(info.branches)) {
                         await new Promise(r => setTimeout(r, 1000));
-                        const pinKey = `${name}__${branchKey}`;
+                        const pinKey = `${key}__${branchKey}`;
                         const result = await geocodeAddress(branch.Address);
                         if (result) coords[pinKey] = { lat: result.lat, lon: result.lon, address: branch.Address, name: branch.Name };
                     }
                 }
+
+                // Update map progressively as each pin comes in
+                setClinicCoords({ ...coords });
             }
 
-            setClinicCoords(coords);
+            setIsGeocoding(false);
         };
 
         geocodeAll();
@@ -92,7 +113,7 @@ export function Homepage(props){
                         )}
                     </div>
                 </div>
-                <ViewMap coords={clinicCoords}/>
+                <ViewMap coords={clinicCoords} isLoading={isGeocoding} />
             </main>
         </div>
 

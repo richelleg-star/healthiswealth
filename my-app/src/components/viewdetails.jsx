@@ -30,17 +30,21 @@ function isTrue(val) {
     return val === true || val === "true";
 }
 
-// fixes the mobile bottom-sheet on both iOS Safari and Android Chrome.
+// Normalizes Firebase arrays-as-objects OR real arrays into a proper array
+function toArray(val) {
+    if (!val) return [];
+    if (Array.isArray(val)) return val;
+    return Object.values(val);
+}
+
 export function DetailsModal({ selectedItem, onClose }) {
     if (!selectedItem) return null;
 
     const isEvent = Boolean(selectedItem["Date Start"]);
 
-    // Normalize branches: Firebase returns an object keyed by push IDs
-    const branches = selectedItem.branches
-        ? Object.values(selectedItem.branches)
-        : [];
-
+    const branches = toArray(selectedItem.branches);
+    const altInsurance = toArray(selectedItem.AltInsurance);
+    const tags = toArray(selectedItem.Tags);
     const needApt = isTrue(selectedItem.needapt);
 
     return createPortal(
@@ -115,11 +119,11 @@ export function DetailsModal({ selectedItem, onClose }) {
                         </div>
 
                         {/* Insurance / Payment Options */}
-                        {selectedItem.AltInsurance?.length > 0 && (
+                        {altInsurance.length > 0 && (
                             <div className="info-section">
                                 <h4>Insurance / Payment Options</h4>
                                 <ul>
-                                    {selectedItem.AltInsurance.map((item, i) => (
+                                    {altInsurance.map((item, i) => (
                                         <li key={i}>{item}</li>
                                     ))}
                                 </ul>
@@ -166,6 +170,26 @@ export function DetailsModal({ selectedItem, onClose }) {
 
                 {/* ── SHARED FIELDS ── */}
 
+                {/* Notes */}
+                {selectedItem.notes && (
+                    <div className="info-row">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                            <polyline points="14 2 14 8 20 8"/>
+                        </svg>
+                        {selectedItem.notes}
+                    </div>
+                )}
+
+                {/* Tags */}
+                {tags.length > 0 && (
+                    <div className="tags">
+                        {tags.map((tag, i) => (
+                            <span key={i} className="tag">{tag}</span>
+                        ))}
+                    </div>
+                )}
+
                 {/* Website Link */}
                 {selectedItem.link && (
                     <div className="info-row">
@@ -174,30 +198,10 @@ export function DetailsModal({ selectedItem, onClose }) {
                             <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
                         </svg>
                         <a href={selectedItem.link} target="_blank" rel="noopener noreferrer">
-                            {selectedItem.link}
+                            Visit Website
                         </a>
                     </div>
                 )}
-
-                {/* Description */}
-                {selectedItem.Description && (
-                    <div className="info-row">{selectedItem.Description}</div>
-                )}
-
-                {/* Notes */}
-                {selectedItem.notes && (
-                    <div className="info-section notes">
-                        <h4>Notes</h4>
-                        <p>{selectedItem.notes}</p>
-                    </div>
-                )}
-
-                {/* Tags */}
-                <div className="tags">
-                    {selectedItem.Tags?.map((tag, i) => (
-                        <span key={i} className="tag">{tag}</span>
-                    ))}
-                </div>
             </div>
         </div>,
         document.body

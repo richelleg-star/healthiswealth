@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { SearchFunction } from "../components/searchfunction";
 import { Link, useNavigate, NavLink } from "react-router";
 import { BrowseCards } from "../cards/regularcards";
@@ -7,13 +7,15 @@ import { getDatabase, ref, onValue } from "firebase/database";
 import { LoggedOutProviderBar } from '../navbar/notproviderbar';
 import { EventCards } from "../cards/eventcards";
 import { FooterForWeb } from "../navbar/footer";
+import { geocodeAddress, pruneCache } from "../components/geocode";
 import { filterEventsByZip } from "../components/filterforzip";
-import { geocodeAddress } from "../components/geocode";
 
 export function HealthEvents(){
     const [events, setEvents] = useState({})
     const [eventsCoords, seteventsCoords] = useState({});
     const [zipQuery, setZipQuery] = useState("");
+    const [isGeocoding, setIsGeocoding] = useState(false);
+    const hasGeocoded = useRef(false); // guard to prevent re-running
 
     useEffect(() => {
         const db = getDatabase();
@@ -31,16 +33,30 @@ export function HealthEvents(){
 
     useEffect(() => {
         if (Object.keys(events).length === 0) return;
+        if (hasGeocoded.current) return; // already ran, don't repeat
+        hasGeocoded.current = true;
+
+        // Prune stale cache entries for deleted events
+        const activeAddresses = Object.values(events)
+            .filter(info => !info.Address.includes("Multiple"))
+            .map(info => info.Address);
+        pruneCache(activeAddresses);
 
         const geocodeAll = async () => {
+            setIsGeocoding(true);
             const coords = {};
-            for (const [name, info] of Object.entries(events)) {
+
+            for (const [key, info] of Object.entries(events)) {
                 if (info.Address.includes("Multiple")) continue;
                 await new Promise(r => setTimeout(r, 1000));
                 const result = await geocodeAddress(info.Address);
-                if (result) coords[name] = { lat: result.lat, lon: result.lon, address: info.Address, name: info.Name };
+                if (result) coords[key] = { lat: result.lat, lon: result.lon, address: info.Address, name: info.Name };
+
+                // Update map progressively as each pin comes in
+                seteventsCoords({ ...coords });
             }
-            seteventsCoords(coords);
+
+            setIsGeocoding(false);
         };
         geocodeAll();
     }, [events]);
@@ -72,7 +88,7 @@ export function HealthEvents(){
                     )}
                 </div>
             </div>
-            <ViewMap coords={eventsCoords}/>
+            <ViewMap coords={eventsCoords} isLoading={isGeocoding} />
         </main>
 
         <FooterForWeb/>
