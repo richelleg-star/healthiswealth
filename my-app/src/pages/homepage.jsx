@@ -8,6 +8,7 @@ import { getDatabase, ref, onValue } from "firebase/database";
 import { useEffect, useState } from "react";
 import { FooterForWeb } from "../navbar/footer";
 import { DetailsModal } from "../components/viewdetails";
+import { geocodeAddress } from "../components/geocode";
 import { filterClinicsByZip } from "../components/filterforzip";
 
 export function Homepage(props){
@@ -15,7 +16,7 @@ export function Homepage(props){
     const [clinics, setClinics] = useState({})
     const [clinicCoords, setClinicCoords] = useState({});
     const [selected, setSelected] = useState(null);
-    const [zipQuery, setZipQuery] = useState("");  // ← added
+    const [zipQuery, setZipQuery] = useState("");
 
     useEffect(() => {
         const db = getDatabase();
@@ -29,29 +30,37 @@ export function Homepage(props){
     }, []);
 
     const allclinics = Object.entries(clinics);
-
-    // Apply zip filter — if zipQuery is empty, shows everything
-    const visibleClinics = filterClinicsByZip(allclinics, zipQuery); // ← added
+    const visibleClinics = filterClinicsByZip(allclinics, zipQuery);
 
     useEffect(() => {
         if (Object.keys(clinics).length === 0) return;
 
         const geocodeAll = async () => {
             const coords = {};
+
             for (const [name, info] of Object.entries(clinics)) {
-                if (info.Address.includes("Multiple")) continue;
-                const encoded = encodeURIComponent(info.Address);
-                const res = await fetch(`https://nominatim.openstreetmap.org/search?q=${encoded}&format=json`, {
-                    headers: { 'User-Agent': `healthiswealth (${import.meta.env.VITE_CONTACT_EMAIL})` } 
-                });
-                const data = await res.json();
-                if (data[0]) coords[name] = { lat: data[0].lat, lon: data[0].lon };
-                await new Promise(r => setTimeout(r, 1000));
+                // Single location — geocode top-level address
+                if (!info.Address.includes("Multiple")) {
+                    await new Promise(r => setTimeout(r, 1000));
+                    const result = await geocodeAddress(info.Address);
+                    if (result) coords[name] = { lat: result.lat, lon: result.lon, address: info.Address, name: info.Name };
+
+                // Multiple locations — geocode each branch individually
+                } else if (info.branches) {
+                    for (const [branchKey, branch] of Object.entries(info.branches)) {
+                        await new Promise(r => setTimeout(r, 1000));
+                        const pinKey = `${name}__${branchKey}`;
+                        const result = await geocodeAddress(branch.Address);
+                        if (result) coords[pinKey] = { lat: result.lat, lon: result.lon, address: branch.Address, name: branch.Name };
+                    }
+                }
             }
+
             setClinicCoords(coords);
         };
+
         geocodeAll();
-    }, [clinics]); 
+    }, [clinics]);
 
     return(
         <>
@@ -65,7 +74,6 @@ export function Homepage(props){
                 <p>No hidden fees. No language barriers. Search for free, sliding-scale, and community clinics near you in King County.</p>
             </section>
 
-            {/* onSearch receives the zip string from SearchFunction */}
             <SearchFunction onSearch={(zip) => setZipQuery(zip)} />
 
             <main className="container">

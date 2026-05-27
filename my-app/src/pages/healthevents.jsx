@@ -8,11 +8,12 @@ import { LoggedOutProviderBar } from '../navbar/notproviderbar';
 import { EventCards } from "../cards/eventcards";
 import { FooterForWeb } from "../navbar/footer";
 import { filterEventsByZip } from "../components/filterforzip";
+import { geocodeAddress } from "../components/geocode";
 
 export function HealthEvents(){
     const [events, setEvents] = useState({})
     const [eventsCoords, seteventsCoords] = useState({});
-    const [zipQuery, setZipQuery] = useState(""); // ← added
+    const [zipQuery, setZipQuery] = useState("");
 
     useEffect(() => {
         const db = getDatabase();
@@ -26,9 +27,7 @@ export function HealthEvents(){
     }, []);
 
     const allevents = events ? Object.entries(events) : [];
-
-    // Apply zip filter — if zipQuery is empty, shows everything
-    const visibleEvents = filterEventsByZip(allevents, zipQuery); // ← added
+    const visibleEvents = filterEventsByZip(allevents, zipQuery);
 
     useEffect(() => {
         if (Object.keys(events).length === 0) return;
@@ -37,13 +36,9 @@ export function HealthEvents(){
             const coords = {};
             for (const [name, info] of Object.entries(events)) {
                 if (info.Address.includes("Multiple")) continue;
-                const encoded = encodeURIComponent(info.Address);
-                const res = await fetch(`https://nominatim.openstreetmap.org/search?q=${encoded}&format=json`, {
-                    headers: { 'User-Agent': `healthiswealth (${import.meta.env.VITE_CONTACT_EMAIL})` }
-                });
-                const data = await res.json();
-                if (data[0]) coords[name] = { lat: data[0].lat, lon: data[0].lon };
                 await new Promise(r => setTimeout(r, 1000));
+                const result = await geocodeAddress(info.Address);
+                if (result) coords[name] = { lat: result.lat, lon: result.lon, address: info.Address, name: info.Name };
             }
             seteventsCoords(coords);
         };
@@ -63,7 +58,6 @@ export function HealthEvents(){
             </section>
         </div>
 
-        {/* onSearch receives the zip string from SearchFunction */}
         <SearchFunction onSearch={(zip) => setZipQuery(zip)} />
 
         <main className="container">
