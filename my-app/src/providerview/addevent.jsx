@@ -66,16 +66,25 @@ export function AddEvent() {
             const db = getDatabase();
             const eventsRef = ref(db, 'healthevents');
             const newEventRef = push(eventsRef);
+
             await fireSet(newEventRef, {
-                eventName, eventDate, eventTime, eventLocation,
-                serviceType, cost, walkIn, languages, notes,
-                postedBy: currentUser.uid,
+                Name,
+                "Date End": dateEnd,
+                "Date Start": dateStart,
+                Address,
+                Time,
+                freeOrLowCost,
+                needapt,
+                "Language Spoken": languages,
+                notes,
+                // Store which clinic posted this event
+                uid: user.uid,
             });
+
             alert('Event saved successfully!');
-            setEventName(''); setEventDate(''); setEventTime('');
-            setEventLocation(''); setLanguages(''); setNotes('');
+            navigate('/homepage');
         } catch (error) {
-            console.error(error);
+            console.log(error.code, error.message);
             alert(error.message);
         }
     };
