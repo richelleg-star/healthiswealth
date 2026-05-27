@@ -26,7 +26,7 @@ export function EditClinic() {
         needapt: true,
         link: '',
         Tags: [],
-        AltInsurance: '',
+        AltInsurance: [],
     });
 
     const db = getDatabase();
