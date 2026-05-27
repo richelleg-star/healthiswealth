@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
-import { getAuth, signOut } from "firebase/auth";
+import { signOut } from "firebase/auth";
+import { auth } from "../../firebase";
 
 function handleLanguageChange(e) {
     const lang = e.target.value;
@@ -50,7 +51,6 @@ export function ProviderBar() {
     }, []);
 
     function handleLogout() {
-        const auth = getAuth();
         signOut(auth)
             .then(() => navigate("/providerlogin"))
             .catch((error) => console.error("Sign out error:", error));
@@ -59,14 +59,17 @@ export function ProviderBar() {
     return (
         <header>
             <div className="logo">
-                <img
+                                <img
                     src="/clover_icon.png"
                     alt="HealthIsWealth logo"
                     style={{ height: '36px', width: 'auto' }}
                 />
+                <NavLink to="/homepage" className="logo">
                 HealthIs<span>Wealth</span>
+                </NavLink>
+
+                
             </div>
-            <nav>
                 <NavLink to="/editclinic">
                     {({ isActive }) => (
                         <span className={isActive ? "active" : ""}>Add / Edit Clinic</span>
@@ -131,7 +134,6 @@ export function ProviderBar() {
                 >
                     Log Out
                 </button>
-            </nav>
         </header>
     );
 }

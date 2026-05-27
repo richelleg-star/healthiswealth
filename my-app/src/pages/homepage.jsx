@@ -7,26 +7,19 @@ import { ViewMap } from "../components/mapintegration";
 import { getDatabase, ref, onValue } from "firebase/database";
 import { useEffect, useState } from "react";
 import { FooterForWeb } from "../navbar/footer";
-
-
-//npm run build THEN netlify deploy --prod
+import { DetailsModal } from "../components/viewdetails";
+import { filterClinicsByZip } from "../components/filterforzip";
 
 export function Homepage(props){
-    const filtereditems1 = ['All Services', 'Primary Care', 'Dental', 'Mental Health']
-    const filtereditems2 = ['Any Cost', 'Free Only', 'Sliding Scale']
     const db = getDatabase()
     const [clinics, setClinics] = useState({})
     const [clinicCoords, setClinicCoords] = useState({});
-    const [modalContent, setModalContent] = useState(null); // this is for the popup; 
-    // because of issues with the dom (pops up are stuck inside the card if you don't adjust for it)
-    // you have to unfortunately adjust it so the pop can escape the card by putting it inside the body instead
-    // because of the way this is set up, we have to pass these as props through each call of the div
-    // sucht hat it will go homepage/page -> card -> viewdetails specfically
+    const [selected, setSelected] = useState(null);
+    const [zipQuery, setZipQuery] = useState("");  // ← added
 
-// This will listen to our database and get the values need on each render
     useEffect(() => {
-        const db = getDatabase(); // fetch the database
-        const clinicRef = ref(db, "clinicalternatives"); // get a reference to the database, at clinicalalternaties
+        const db = getDatabase();
+        const clinicRef = ref(db, "clinicalternatives");
         const unregisterFunction = onValue(clinicRef, (s) => {
             setClinics(s.val());
         }, (error) => {
@@ -35,12 +28,13 @@ export function Homepage(props){
         return () => unregisterFunction();
     }, []);
 
-    const allclinics = Object.entries(clinics)
-    console.log(clinicCoords)
+    const allclinics = Object.entries(clinics);
 
-// loads the coordinates for the map
+    // Apply zip filter — if zipQuery is empty, shows everything
+    const visibleClinics = filterClinicsByZip(allclinics, zipQuery); // ← added
+
     useEffect(() => {
-        if (Object.keys(clinics).length === 0) return; // wait for clinics to load
+        if (Object.keys(clinics).length === 0) return;
 
         const geocodeAll = async () => {
             const coords = {};
@@ -70,38 +64,32 @@ export function Homepage(props){
                 <h1>Find Affordable Care, Instantly.</h1>
                 <p>No hidden fees. No language barriers. Search for free, sliding-scale, and community clinics near you in King County.</p>
             </section>
-            <SearchFunction filteritems1={filtereditems1} filteritems2={filtereditems2}/>
+
+            {/* onSearch receives the zip string from SearchFunction */}
+            <SearchFunction onSearch={(zip) => setZipQuery(zip)} />
+
             <main className="container">
                 <div>
                     <div className="list-view">
-                        {allclinics.map(([Name, clinicinfo]) => (
-                            <BrowseCards 
-                                key={Name} 
-                                clinicinfo={clinicinfo}
-                                onViewDetails={(info) => setModalContent(info)}
-                            />
-                        ))}
+                        {visibleClinics.length > 0 ? (
+                            visibleClinics.map(([Name, clinicinfo]) => (
+                                <BrowseCards 
+                                    key={Name} 
+                                    clinicinfo={clinicinfo}
+                                    onViewDetails={(info) => setSelected(info)}
+                                />
+                            ))
+                        ) : (
+                            <p className="no-results">No clinics found for zip code <strong>{zipQuery}</strong>.</p>
+                        )}
                     </div>
                 </div>
-                <ViewMap coords = {clinicCoords}/>
+                <ViewMap coords={clinicCoords}/>
             </main>
         </div>
-        
-            {modalContent && (
-                <div className="modal-overlay" onClick={() => setModalContent(null)}>
-                    <div className="modal" onClick={(e) => e.stopPropagation()}>
-                    <button 
-                        className="modal-close-btn" 
-                        onClick={() => setModalContent(null)} 
-                        aria-label="Close modal"
-                    >
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-                    </button>
-                        <h2>{modalContent.Name}</h2>
-                        <p>{modalContent.Address}</p>
-                    </div>
-                </div>
-            )}
+
+        <DetailsModal selectedItem={selected} onClose={() => setSelected(null)} />
+
         <FooterForWeb/>
         </>
     )
