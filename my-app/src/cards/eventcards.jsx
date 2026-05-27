@@ -30,8 +30,6 @@ else(
     WalkinOrApt = 'Walk-in Accepted'
 )
 
-console.log(alleventinfo)
-
 
 function formatEventTime(dateTimeStr) {
     const date = new Date(dateTimeStr);
