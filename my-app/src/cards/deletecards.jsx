@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { CalendarIntegration } from "../components/calendarintegration";
 import { ViewDetails, DetailsModal } from "../components/viewdetails";
 
-export function EventCards(props){
+export function DeleteCards(props){
 
 const alleventinfo = props.allevents
 const [selected, setSelected] = useState(null);
@@ -30,25 +30,14 @@ else(
     WalkinOrApt = 'Walk-in Accepted'
 )
 
-console.log(alleventinfo)
-
-
-function formatEventTime(dateTimeStr) {
-    const date = new Date(dateTimeStr);
-    
-    const month = date.toLocaleString('en-US', { month: 'long' });
-    const day = date.getDate();
-    const year = date.getFullYear();
-    const time = date.toLocaleString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
-
-    // Add ordinal suffix (1st, 2nd, 3rd, 4th...)
-    const suffix = (d) => {
-        if (d > 3 && d < 21) return 'th';
-        return ['th','st','nd','rd'][d % 10] || 'th';
+    const deleteClinicEvent = async (eventId) => {
+        const db = getDatabase();
+        await remove(ref(db, `healthevents/${eventId}`));
+        
+        // Remove it from local state too so the UI updates instantly
+        setEvents(events.filter(e => e.id !== eventId));
     };
 
-    return `${month} ${day}${suffix(day)}, ${year} @ ${time}`;
-}
 
 return(
     <>
@@ -69,11 +58,7 @@ return(
         </div>
         <div className="info-row">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
-                {WalkinOrApt}
-        </div>
-        <div className="info-row">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
-                Time: {formatEventTime(alleventinfo["Date Start"])} - {formatEventTime(alleventinfo["Date End"])}
+                {WalkinOrApt} ({alleventinfo.Time})
         </div>
         <div className="tags">
                         {alleventinfoTags.map((s, i) => (
@@ -87,11 +72,12 @@ return(
                 <CalendarIntegration
                     name={alleventinfo['Name']}
                     startDate={alleventinfo['Date Start']}
-                    endDate={alleventinfo['Date End']}
+                    endDate={alleventinfo['Date Start']}
                     location={alleventinfo['Address']}
                     language={alleventinfo['Language Spoken']}
                     link={alleventinfo['link']}
                 />
+                <button className="btn btn-delete" onClick={deleteClinicEvent}>Delete Event</button>
             </div>
         </div>
     </div>

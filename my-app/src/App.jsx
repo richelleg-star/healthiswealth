@@ -13,13 +13,12 @@ export default function App() {
   return (
     <Routes>
       <Route path="*" element={<Homepage/>} />
-      <Route path="healthevents" element={<HealthEvents/>} />
-      <Route path="providerlogin" element={<ProviderLoginPage/>} />
-      <Route path='provider-signup' element={<ProviderSignupPage/>}/>
-      <Route path="editclinic" element={<EditClinic />} />
-      <Route path="addevent" element={<AddEvent />} />
-      <Route path="deletevent" element={<DeleteEventPage/>} />
-      {/* </Routes><Route path="healthevents" element={<health>} /> */}
+      <Route path="/healthevents" element={<HealthEvents/>}/>
+      <Route path="/providerlogin" element={<ProviderLoginPage/>} />
+      <Route path="/provider-signup" element={<ProviderSignupPage/>}/>
+      <Route path="/editclinic" element={<EditClinic />} />
+      <Route path="/addevent" element={<AddEvent />} />
+      <Route path="/deletevent" element={<DeleteEventPage/>} />
     </Routes>
   )
 }

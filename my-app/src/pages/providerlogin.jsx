@@ -1,11 +1,34 @@
 import { useNavigate, NavLink } from "react-router-dom";
+import { useState } from "react";
+import { auth } from "../../firebase";
+import { signInWithEmailAndPassword } from "firebase/auth";
 
 export function ProviderLoginPage() {
+    
+    const [email, setLoginEmail] = useState('')
+    const [password, setLoginPassword] = useState('')
+    
     const navigate = useNavigate();
 
-    function handleLogin(event) {
-        event.preventDefault();
-        navigate("/editclinic");
+     const handleLogin = async (e) => {
+        e.preventDefault()
+        setLoginEmail(e.target.Email.value)
+        setLoginPassword(e.target.Password.value)
+        let thisemail = e.target.Email.value
+        let thispassword = e.target.Password.value
+        signInWithEmailAndPassword(auth, thisemail, thispassword)
+        .then((userCredential) => {
+            const user = userCredential.user
+        })
+        .then(() => {
+            navigate('/editclinic')
+        })
+        .catch((error) => {
+                const errorCode = error.code;
+                const errorMessage = error.message;
+                console.log(errorCode, errorMessage)
+        })
+
     }
 
     return (
@@ -36,12 +59,12 @@ export function ProviderLoginPage() {
                         <form onSubmit={handleLogin}>
                             <div className="form-group">
                                 <label htmlFor="signin-email">Work Email Address</label>
-                                <input type="email" id="signin-email" placeholder="name@clinic.org" required />
+                                <input name="Email" type="email" id="signin-email" placeholder="name@clinic.org" required />
                             </div>
 
                             <div className="form-group">
                                 <label htmlFor="signin-password">Password</label>
-                                <input type="password" id="signin-password" placeholder="••••••••" required />
+                                <input name="Password" type="password" id="signin-password" placeholder="••••••••" required />
                                 <div className="forgot-link">
                                     <a href="#">Forgot password?</a>
                                 </div>

@@ -1,10 +1,13 @@
 import { getDatabase, ref, query, orderByChild, equalTo, get, remove } from "firebase/database";
-import { getAuth } from "firebase/auth";
 import { useState, useEffect } from "react";
+import { auth } from "../../firebase";
+import { ProviderBar } from "../navbar/providerbar";
+import { FooterForWeb } from "../navbar/footer";
+import { DeleteCards } from "../cards/deletecards";
+import { ViewMap } from "../components/mapintegration";
 
 export function DeleteEventPage(props) {
   const [events, setEvents] = useState([]);
-  const auth = getAuth();
   const db = getDatabase();
 
   useEffect(() => {
@@ -39,18 +42,20 @@ export function DeleteEventPage(props) {
         setEvents(events.filter(e => e.id !== eventId));
     };
 
+    console.log(events)
+
 
   return (
     <>
-    <div>navbar</div>
-    <div>
-      {events.map(event => (
-        <div key={event.id}>
-            {event.Name}
-            <button onClick={() => deleteClinicEvent(event.id)}>delete</button>
-        </div>
-      ))}
-    </div>
+    <ProviderBar/>
+                <div>
+                    <div className="list-view">
+                                                {events.map((event) => (
+                                                    <DeleteCards key={event.id} allevents={event} />
+                                                ))}
+                    </div>
+                </div>
+        <FooterForWeb/>
     </>
   );
 }

@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useRef } from "react";
 import { createPortal } from "react-dom";
 
 export function CalendarIntegration(props) {
@@ -6,29 +6,40 @@ export function CalendarIntegration(props) {
   const [menuStyle, setMenuStyle] = useState({});
   const buttonRef = useRef(null);
 
-  // convert our dates so they are properly formatted
+  const hasTime = (dateStr) => dateStr && dateStr.includes("T");
+
   const formatDate = (dateStr) => {
+    if (!dateStr) return null;
     const date = new Date(dateStr);
     if (isNaN(date)) return null;
     const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, "0"); // add one to prevent any day late errors
+    const month = String(date.getMonth() + 1).padStart(2, "0");
     const day = String(date.getDate()).padStart(2, "0");
     return `${year}-${month}-${day}`;
   };
 
-  const toGoogleDate = (dateStr) => dateStr.replace(/-/g, "");
+  // formatDateTime generated with the help of Claude for being able to format dates when they are all day vs have specific time
+  const formatDateTime = (dateStr) => {
+    if (!dateStr || !hasTime(dateStr)) return null;
+    const date = new Date(dateStr);
+    if (isNaN(date)) return null;
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    const hours = String(date.getHours()).padStart(2, "0");
+    const mins = String(date.getMinutes()).padStart(2, "0");
+    return `${year}${month}${day}T${hours}${mins}00`;
+  };
 
-  
   const eventName = props.name;
-  const startDate = formatDate(props.startDate);
-  const endDate = formatDate(props.endDate);
   const location = props.location || "";
   const description = props.description || "";
 
-  console.log(eventName, startDate, endDate, location, description)
+  const startDate = formatDate(props.startDate);
+  const endDate = formatDate(props.endDate);
+  const startDateTime = formatDateTime(props.startDate);
+  const endDateTime = formatDateTime(props.endDate);
 
-
-  // Guard against missing or malformed dates
   if (!startDate || !endDate) {
     return (
       <button className="btn btn-outline" disabled>
@@ -37,18 +48,35 @@ export function CalendarIntegration(props) {
     );
   }
 
-  // lines 26-43 were help generated with ClaudeAI to get link formatting right for the props we have
 
-  const googleUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(eventName)}&dates=${toGoogleDate(startDate)}/${toGoogleDate(endDate)}&location=${encodeURIComponent(location)}&details=${encodeURIComponent(description)}`;
+  // urls for the ics help generated with claude
+  const googleStart = startDateTime ?? startDate.replace(/-/g, "");
+  const googleEnd = endDateTime ?? endDate.replace(/-/g, "");
 
-  const icsContent = `BEGIN:VCALENDAR\nVERSION:2.0\nBEGIN:VEVENT\nSUMMARY:${eventName}\nDTSTART:${toGoogleDate(startDate)}\nDTEND:${toGoogleDate(endDate)}\nLOCATION:${location}\nDESCRIPTION:${description}\nEND:VEVENT\nEND:VCALENDAR`;
+  const googleUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(eventName)}&dates=${googleStart}/${googleEnd}&location=${encodeURIComponent(location)}&details=${encodeURIComponent(description)}`;
+
+  const icsStart = startDateTime
+    ? `DTSTART:${startDateTime}`
+    : `DTSTART;VALUE=DATE:${startDate.replace(/-/g, "")}`;
+  const icsEnd = endDateTime
+    ? `DTEND:${endDateTime}`
+    : `DTEND;VALUE=DATE:${endDate.replace(/-/g, "")}`;
+
+  const icsContent = `BEGIN:VCALENDAR\nVERSION:2.0\nBEGIN:VEVENT\nSUMMARY:${eventName}\n${icsStart}\n${icsEnd}\nLOCATION:${location}\nDESCRIPTION:${description}\nEND:VEVENT\nEND:VCALENDAR`;
   const icsUrl = `data:text/calendar;charset=utf-8,${encodeURIComponent(icsContent)}`;
 
-  const outlookUrl = `https://outlook.live.com/calendar/0/deeplink/compose?subject=${encodeURIComponent(eventName)}&startdt=${startDate}&enddt=${endDate}&location=${encodeURIComponent(location)}&body=${encodeURIComponent(description)}`;
+  const outlookStart = startDateTime
+    ? `${formatDate(props.startDate)}T${props.startDate.split("T")[1]}:00`
+    : startDate;
+  const outlookEnd = endDateTime
+    ? `${formatDate(props.endDate)}T${props.endDate.split("T")[1]}:00`
+    : endDate;
 
-  const yahooUrl = `https://calendar.yahoo.com/?v=60&title=${encodeURIComponent(eventName)}&st=${toGoogleDate(startDate)}&et=${toGoogleDate(endDate)}&in_loc=${encodeURIComponent(location)}&desc=${encodeURIComponent(description)}`;
+  const outlookUrl = `https://outlook.live.com/calendar/0/deeplink/compose?subject=${encodeURIComponent(eventName)}&startdt=${outlookStart}&enddt=${outlookEnd}&location=${encodeURIComponent(location)}&body=${encodeURIComponent(description)}`;
 
-  const microsoft365Url = `https://outlook.office.com/calendar/0/deeplink/compose?subject=${encodeURIComponent(eventName)}&startdt=${startDate}&enddt=${endDate}&location=${encodeURIComponent(location)}&body=${encodeURIComponent(description)}`;
+  const microsoft365Url = `https://outlook.office.com/calendar/0/deeplink/compose?subject=${encodeURIComponent(eventName)}&startdt=${outlookStart}&enddt=${outlookEnd}&location=${encodeURIComponent(location)}&body=${encodeURIComponent(description)}`;
+
+  const yahooUrl = `https://calendar.yahoo.com/?v=60&title=${encodeURIComponent(eventName)}&st=${googleStart}&et=${googleEnd}&in_loc=${encodeURIComponent(location)}&desc=${encodeURIComponent(description)}`;
 
   const calendars = [
     { label: "Google Calendar", url: googleUrl, target: "_blank" },
@@ -58,10 +86,6 @@ export function CalendarIntegration(props) {
     { label: "Yahoo Calendar", url: yahooUrl, target: "_blank" },
   ];
 
-  console.log(googleUrl, icsUrl, outlookUrl, yahooUrl, microsoft365Url)
-
-  // Always position the menu using fixed coords from the button's bounding rect.
-  // On mobile, CSS overrides to a bottom sheet instead.
   const handleOpen = () => {
     if (!open && buttonRef.current) {
       const rect = buttonRef.current.getBoundingClientRect();
@@ -72,21 +96,6 @@ export function CalendarIntegration(props) {
     }
     setOpen(!open);
   };
-
-  // Close dropdown when clicking outside
-  // useEffect(() => {
-  //   if (!open) return;
-  //   const handleClickOutside = (e) => {
-  //     onClick()
-  //     // if (buttonRef.current && !buttonRef.current.closest(".dropdown").contains(e.target)) {
-  //     //   setOpen(false);
-  //     // }
-
-  //   };
-  
-  //   // document.addEventListener("mousedown", handleClickOutside);
-  //   // return () => document.removeEventListener("mousedown", handleClickOutside);
-  // }, []);
 
   return (
     <div className="dropdown">

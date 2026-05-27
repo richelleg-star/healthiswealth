@@ -69,9 +69,6 @@ return(
                     />
                 )}
             </div>
-            <div className="info-row"> 
-                🚍 Bus 7 (2 min walk)
-            </div>
         </div>
     </div>
 )
