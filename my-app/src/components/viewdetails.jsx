@@ -30,10 +30,11 @@ function isTrue(val) {
     return val === true || val === "true";
 }
 
-// Normalizes Firebase arrays-as-objects OR real arrays into a proper array
+// Normalizes Firebase arrays-as-objects OR real arrays OR comma-separated strings into a proper array
 function toArray(val) {
     if (!val) return [];
     if (Array.isArray(val)) return val;
+    if (typeof val === "string") return val.split(",").map(s => s.trim()).filter(Boolean);
     return Object.values(val);
 }
 
@@ -190,16 +191,14 @@ export function DetailsModal({ selectedItem, onClose }) {
                     </div>
                 )}
 
-                {/* Website Link */}
+                {/* Link */}
                 {selectedItem.link && (
                     <div className="info-row">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                             <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/>
                             <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
                         </svg>
-                        <a href={selectedItem.link} target="_blank" rel="noopener noreferrer">
-                            Visit Website
-                        </a>
+                        <a href={selectedItem.link} target="_blank" rel="noopener noreferrer">Visit Website</a>
                     </div>
                 )}
             </div>
